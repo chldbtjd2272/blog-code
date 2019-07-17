@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: local
+  devtools:
+    livereload:
+      enabled: true
+  resources:
+    static-locations:
+      - file:spring-vue/src/front/dist
+
