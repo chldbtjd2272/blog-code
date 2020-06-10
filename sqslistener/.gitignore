@@ -30,5 +30,4 @@ out/
 
 ### VS Code ###
 .vscode/
-
 AwsCredentials.properties
