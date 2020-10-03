@@ -1,17 +1,24 @@
-package com.blogcode.redisnote.config;
+### Spring data redis 설정
 
-import io.lettuce.core.ClientOptions;
-import io.lettuce.core.SocketOptions;
-import io.lettuce.core.TimeoutOptions;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+[redis github](https://github.com/chldbtjd2272/blog-code/tree/master/redis-note)
 
-import java.time.Duration;
+- 기본 yml로 설정가능하다.
 
+```java
+spring:
+  redis:
+    timeout: 3s -> 명령어 수행 timeout
+    host: localhost 
+    port: 6379
+```
+
+- yml로 설정시 redis 연동에 필요한 bean들이 자동으로 생성된다.
+  - redisTemplate,RedisConnectionFactory 등
+  - defualt connectionFactory는 Lettuce가 사용된다.
+  - Lettuce에서 pool을 사용하고 싶다면 redis:lettuce -> 설정에서 풀 설정들을 하면된다.
+- Redis connection의 low -level설정 들을 하고싶다면 직접 해당 설정 bean들을 만들면 된다.
+
+```java
 @Configuration
 public class RedisConfig {
     @Bean
@@ -41,3 +48,10 @@ public class RedisConfig {
     }
 
 }
+
+```
+
+
+
+- 자세한 옵션 설정
+  - https://lettuce.io/core/release/reference/#_publishsubscribe
