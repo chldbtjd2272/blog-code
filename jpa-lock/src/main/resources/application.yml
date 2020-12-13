@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+        ddl-auto: create-drop
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      hibernate.connection.provider_disables_autocommit: true
+    open-in-view: false
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      connectionTimeout: 3000
+      max-lifetime: 58000
+      maximumPoolSize: 10
+      data-source-properties:
+        connectTimeout: 2000
+        socketTimeout: 3000
+      auto-commit: false
