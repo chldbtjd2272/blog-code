@@ -1,0 +1,24 @@
+spring:
+    jpa:
+      show-sql: false
+      properties:
+          hibernate:
+            dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+#            default_batch_fetch_size: 1000
+            jdbc.batch_size: 1000
+            order_inserts: true
+            order_updates: true
+            hbm2ddl.auto: validate
+    datasource:
+      url: jdbc:mysql://localhost:3306/test?logger=com.mysql.jdbc.log.Log4JLogger&profileSQL=true
+      username: root
+      password: root
+      driver-class-name: org.mariadb.jdbc.Driver
+      hikari:
+        connectionTimeout: 3000
+        max-lifetime: 58000
+        maximumPoolSize: 10
+        data-source-properties:
+          connectTimeout: 3000
+          socketTimeout: 60000
+          rewriteBatchedStatements: true

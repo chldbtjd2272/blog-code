@@ -42,7 +42,7 @@ public class LockAccountWriteLockRepositoryTest {
             Account account = writeLockRepository.findByUser("test");
             account.use(-1000);
             latch.countDown();
-            Thread.sleep(1000L);
+            Thread.sleep(4000L);
         }))).start();
 
         //then
@@ -87,7 +87,7 @@ public class LockAccountWriteLockRepositoryTest {
     @DisplayName("읽기 잠금이 걸려있는 트랜잭션이 있으면 변경하는 트랜잭션에서 락이걸린다.")
     void name4() throws InterruptedException {
         //given
-        readLockRepository.save(new Account("test", 1000));
+        Account account2=readLockRepository.save(new Account("test", 1000));
 
         CountDownLatch latch = new CountDownLatch(1);
 
@@ -95,15 +95,17 @@ public class LockAccountWriteLockRepositoryTest {
         new Thread((() -> support.doTransaction(() -> {
             readLockRepository.findByUser("test");
             latch.countDown();
-            Thread.sleep(4000L);//socket timeout 3초
+            Thread.sleep(2000L);//socket timeout 3초
         }))).start();
 
         latch.await();
-        assertThatThrownBy(() -> {
-            support.doTransaction(() -> {
-                Account account = readLockRepository.findByUser("test");
-                account.use(-1000);
-            });
-        }).isInstanceOf(DataAccessResourceFailureException.class);
+        support.doTransaction(() -> {
+            Account account = readLockRepository.findByUser("test");
+            account.use(-1000);
+        });
+        Account account = readLockRepository.findById(account2.getId()).orElseThrow(RuntimeException::new);
+        System.out.println(account.getMoney());
+//        assertThatThrownBy(() -> {
+//        })
     }
 }
