@@ -1,0 +1,3 @@
+logging.level:
+  org.springframework.data.redis: debug
+  io.lettuce: debug
