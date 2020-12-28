@@ -3,6 +3,8 @@
 > 큐잉 시스템을 사용할 시 큐에서 메시지를 꺼내 소비하는 시스템이 필요하다.
 >
 > spring cloud를 사용하면 추상화된 기능들을 사용하여 쉽게 consumer를 구축할 수 있다.
+>
+> [예제 코드 참고 링크](https://github.com/chldbtjd2272/blog-code/tree/master/sqslistener)
 
 
 
@@ -161,7 +163,7 @@
     - https://stackoverflow.com/questions/58601625/prevent-spring-cloud-aws-messaging-from-trying-to-stop-the-queue
   - queueStopTimeout은 Factory클래스를 통해 설정할 수 없고, SimpleMessageListenerContainer를 통해 설정할 수 있다.
   - queueStopTimeout 설정을 위해 SimpleMessageListenerContainer를 띄우면 autoConfig는 이용할 수 없으므로 consumer구성에 필요한 bean들을 직접 띄워야한다.
-    - 해당 설정 코드는 github 참고
+    - 해당 설정 코드는 [github](https://github.com/chldbtjd2272/blog-code/blob/master/sqslistener/src/main/java/com/blogcode/sqslistener/config/CustomSqsListenerConfig.java) 참고
 
 - @SqsListener(value = "test-queue",deletionPolicy = {})
 
