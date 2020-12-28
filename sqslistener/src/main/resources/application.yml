@@ -1,1 +1,3 @@
-aws.sqs.queue.message-command: test
+cloud.aws:
+  region.static: ap-northeast-2
+  stack.auto: false
