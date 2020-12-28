@@ -30,9 +30,10 @@ public class CustomSqsListenerConfig {
     public SimpleMessageListenerContainer simpleMessageListenerContainer() {
         SimpleMessageListenerContainer container = new AwsMessageListenerContainer();
         container.setMaxNumberOfMessages(5);
-        container.setWaitTimeOut(10);
-        container.setQueueStopTimeout(30);
+        container.setWaitTimeOut(1);
+        container.setQueueStopTimeout(5000);
         container.setAmazonSqs(amazonSQS);
+        container.setVisibilityTimeout(60);
         container.setMessageHandler(queueMessageHandler());
         container.setTaskExecutor(createThreadPool());
         return container;
@@ -51,6 +52,8 @@ public class CustomSqsListenerConfig {
         executor.setCorePoolSize(10);
         executor.setMaxPoolSize(10);
         executor.setThreadNamePrefix("custom-thread-");
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(30000);
         executor.initialize();
         return executor;
     }

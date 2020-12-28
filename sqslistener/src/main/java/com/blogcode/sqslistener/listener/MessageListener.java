@@ -14,11 +14,10 @@ import org.springframework.stereotype.Component;
 public class MessageListener {
 
 
-    @SqsListener(value = "cys-test", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
-    public void listen(Message message, Acknowledgment acknowledgment) throws InterruptedException {
+    @SqsListener(value = "cys-test", deletionPolicy = SqsMessageDeletionPolicy.ALWAYS)
+    public void listen(Message message) throws InterruptedException {
         log.info(message.toString());
-        Thread.sleep(10000L);
+        Thread.sleep(20000L);
         log.info("메시지 처리 완료");
-        acknowledgment.acknowledge();
     }
 }

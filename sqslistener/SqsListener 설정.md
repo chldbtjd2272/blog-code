@@ -133,27 +133,26 @@
 
       - 이미 sqs로 메시지를 관리하는데 어플리케이션 메모리에서 메시지를 관리할 필요가 없다.
 
-    - 커스텀 스레드 풀을 설정할 경우 어플리케이션 종료 시 커스텀 스레드풀을 destroy시키지 않는다. 순차적으로 종료하고 싶다면
+    - 스레드 풀의 graceful shutdown을 위한 추가 설정이 필요하면 WaitForTasksToCompleteOnShutdown와 AwaitTerminationSeconds을 설정해야 한다.
+    
+  - SimpleMessageListenerContainerFactory는 queueStopTimeout 를 10초로 고정할 수 밖에 없어서 그 이상의 메시지 처리 작업 대기 시간을 가지고 싶다면 스레드 풀 종료 시 스레드 작업 대기시간을 설정해야한다.
+      
+- 커스텀 스레드 풀을 설정할 경우 어플리케이션 종료 시 커스텀 스레드풀을 destroy시키지 않는다. 순차적으로 종료하고 싶다면
       SimpleMessageListenerContainer 을 상속하여 doDestroy 재구현해줘야 한다.
-
-    - 스레드 풀의 graceful shutdown을 위해 WaitForTasksToCompleteOnShutdown,AwaitTerminationSeconds을 설정할 필요가 없다.
-
-      - SimpleMessageListenerContainer queueStopTimeout 설정으로 AwaitTerminationSeconds 대체가능
-      - 스레드 풀의 큐 사이즈는 0으로 유지하는걸 추천하므로 WaitForTasksToCompleteOnShutdown은 기본값 false를 유지
-
-    - ```java
-      public class SimpleMessageListenerContainer extends AbstractMessageListenerContainer {
-      ....
-      	@Override
-      	protected void doDestroy() {
-      		if (this.defaultTaskExecutor) { //default 스레드풀일 경우만 객체 파괴
-      			((ThreadPoolTaskExecutor) this.taskExecutor).destroy();
-      		}
-      	}
-      ...
-      }
-      ```
-
+    
+  - ```java
+        public class SimpleMessageListenerContainer extends AbstractMessageListenerContainer {
+        ....
+        	@Override
+        	protected void doDestroy() {
+        		if (this.defaultTaskExecutor) { //default 스레드풀일 경우만 객체 파괴
+        			((ThreadPoolTaskExecutor) this.taskExecutor).destroy();
+        		}
+        	}
+        ...
+        }
+        ```
+  
 - queueStopTimeout 
 
   - 해당 설정은 queue polling stop 명령이 들어올때 ( 어플리케이션이 종료될때 ) stop이 될 동안 대기하는 시간이다.

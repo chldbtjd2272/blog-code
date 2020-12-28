@@ -18,7 +18,6 @@ import static com.blogcode.sqslistener.config.SqsObjectMapperProvider.messageCon
 
 @Slf4j
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "message.listener", havingValue = "auto")
 @Configuration
 public class SqsListenerConfig {
 
@@ -29,7 +28,7 @@ public class SqsListenerConfig {
         SimpleMessageListenerContainerFactory factory = new SimpleMessageListenerContainerFactory();
         factory.setAmazonSqs(amazonSQSAsync);
         factory.setMaxNumberOfMessages(5);
-//        factory.setTaskExecutor(threadPoolTaskExecutor());
+        factory.setTaskExecutor(threadPoolTaskExecutor());
         factory.setVisibilityTimeout(30);
         factory.setWaitTimeOut(1);
         return factory;
