@@ -211,7 +211,7 @@
 
   - AbstractMessageListenerContainer의 destory메서드를 보면 stop을 다시한번 호출한다.
     - stop을 다시 호출하는 이유는 처음 stop을 호출했을때 메시지 리스너가 종료된걸 확인 못하고 TimeoutException이 발생할 경우를 대비해서 다시한번 종료시도를 하는 것이다.
-    - QueueStopTimeout을 10초로 설정하면 최대 20초까지 메시지 리스너가 종료완료할 시간을 가지게 되는것이다.
+    - QueueStopTimeout을 10초로 설정하면 최대 20초까지 메시지 리스너가 종료 완료할 시간을 가지게 되는것이다.
     - 만약 하나의 메시지 처리가 30초가 걸린다면 해당 메시지는 처리되지 못하고 어플리케이션이 종료될 수 있다.
       - 해당 메시지는 처리하는 동안 ThreadPool의 스레드가 인터럽트되었기 때문에 메시지 삭제는 실행되지 않는다. 
       - 시간지나면 다시 조회가능 (유실 가능성 x)
@@ -221,6 +221,7 @@
     - 커스텀 스레드 풀을 SimpleMessageListenerContainer에 줄 경우 doDestroy는 재구현해야한다.
     - QueueStopTimeout을 10초, 메시지 처리 30초, awaitTerminationMillis 10초라고 하면 메시지 처리가 정상적으로 이뤄진다.
     - 커스텀 스레드풀은 [github 링크 참고](https://github.com/chldbtjd2272/blog-code/blob/master/sqslistener/src/main/java/com/blogcode/sqslistener/config/CustomSqsListenerConfig.java)
+    - 메시지가 정상 처리되더라도 큐에서 삭제 되지 않을 수 있는데, 해당 이유는 SimpleMessageListenerContainer을 destroy할때 AmazonSQSBufferedAsyncClient를 먼저 destroy하기 때문에 삭제처리가 누락될 수 있다. (메시지 유실 x)
 
   
 
