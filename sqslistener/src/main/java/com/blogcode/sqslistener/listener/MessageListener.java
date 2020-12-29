@@ -17,7 +17,7 @@ public class MessageListener {
     @SqsListener(value = "cys-test", deletionPolicy = SqsMessageDeletionPolicy.ALWAYS)
     public void listen(Message message) throws InterruptedException {
         log.info(message.toString());
-        Thread.sleep(20000L);
+        Thread.sleep(5000L);
         log.info("메시지 처리 완료");
     }
 }

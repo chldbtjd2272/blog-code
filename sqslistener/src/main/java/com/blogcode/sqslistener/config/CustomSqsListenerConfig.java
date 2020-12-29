@@ -3,9 +3,7 @@ package com.blogcode.sqslistener.config;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.blogcode.sqslistener.message.AwsMessageListenerContainer;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.messaging.config.QueueMessageHandlerFactory;
 import org.springframework.cloud.aws.messaging.listener.QueueMessageHandler;
 import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
@@ -16,7 +14,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.Collections;
 
-import static com.blogcode.sqslistener.config.SqsObjectMapperProvider.messageConverter;
+import static com.blogcode.sqslistener.message.SqsObjectMapperProvider.messageConverter;
 
 @Import(AwsMessageClientConfig.class)
 @Configuration

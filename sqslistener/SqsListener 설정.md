@@ -54,7 +54,16 @@
 
     
 
+#### AmazonSQSAsync 
 
+- SimpleMessageListenerContainer Sqs 연동 클라이언트는 AmazonSQSAsyncClient,AmazonSQSBufferedAsyncClient 대표적으로 두개의 클라이언트를 사용한다.
+
+  - AmazonSQSBufferedAsyncClient는 실제 연동은 AmazonSQSAsyncClient 구현체를 사용한다. 다른점은 buffer를 활용한  batch로 요청하는 기능이 있다는 것
+    - 메시지 처리 후 삭제요청을 비동기로 메모리에 쌓아두었다가 한번에 요청한다.
+    - 둘 다 내부에 스레드풀을 가지고 네트워크 요청을 처리한다.
+  - AmazonSQSBufferedAsyncClient가 전송 요청수를 줄일 수 있어 더 효율적이다.
+
+  
 
 #### Message Listner 설정
 
@@ -98,7 +107,7 @@
           factory.setAutoStartup(false);
           factory.setQueueMessageHandler(queueMessageHandlerFactory().createQueueMessageHandler());
           factory.setTaskExecutor(threadPoolTaskExecutor());
-    
+        
           return factory;
       }
   ```
@@ -136,10 +145,10 @@
     - 스레드 풀의 graceful shutdown을 위한 추가 설정이 필요하면 WaitForTasksToCompleteOnShutdown와 AwaitTerminationSeconds을 설정해야 한다.
     
   - SimpleMessageListenerContainerFactory는 queueStopTimeout 를 10초로 고정할 수 밖에 없어서 그 이상의 메시지 처리 작업 대기 시간을 가지고 싶다면 스레드 풀 종료 시 스레드 작업 대기시간을 설정해야한다.
-      
+  
 - 커스텀 스레드 풀을 설정할 경우 어플리케이션 종료 시 커스텀 스레드풀을 destroy시키지 않는다. 순차적으로 종료하고 싶다면
       SimpleMessageListenerContainer 을 상속하여 doDestroy 재구현해줘야 한다.
-    
+  
   - ```java
         public class SimpleMessageListenerContainer extends AbstractMessageListenerContainer {
         ....
@@ -151,7 +160,7 @@
         	}
         ...
         }
-        ```
+    ```
   
 - queueStopTimeout 
 

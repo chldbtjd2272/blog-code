@@ -1,4 +1,4 @@
-package com.blogcode.sqslistener.config;
+package com.blogcode.sqslistener.message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

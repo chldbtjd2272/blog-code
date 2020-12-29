@@ -215,13 +215,50 @@
     - 만약 하나의 메시지 처리가 30초가 걸린다면 해당 메시지는 처리되지 못하고 어플리케이션이 종료될 수 있다.
       - 해당 메시지는 처리하는 동안 ThreadPool의 스레드가 인터럽트되었기 때문에 메시지 삭제는 실행되지 않는다. 
       - 시간지나면 다시 조회가능 (유실 가능성 x)
+    
   - SimpleMessageListenerContainer는 doDestroy를 구현하고 있고, 자기 내부 스레드풀이 디폴트 스레드 풀일 경우 바로 파괴한다.
     - 디폴트 스레드 풀은 종료명령이 들어오면 일을 하고 있는 도중에도 스레드 강제 종료해버린다.
     - 만약 스레드가 일을 끝낼때동안 기다리게 하고 싶으면 커스텀 스레드 풀을 만들고 waitForTasksToCompleteOnShutdown, awaitTerminationMillis을 설정하면 된다.
     - 커스텀 스레드 풀을 SimpleMessageListenerContainer에 줄 경우 doDestroy는 재구현해야한다.
     - QueueStopTimeout을 10초, 메시지 처리 30초, awaitTerminationMillis 10초라고 하면 메시지 처리가 정상적으로 이뤄진다.
+    
     - 커스텀 스레드풀은 [github 링크 참고](https://github.com/chldbtjd2272/blog-code/blob/master/sqslistener/src/main/java/com/blogcode/sqslistener/config/CustomSqsListenerConfig.java)
-    - 메시지가 정상 처리되더라도 큐에서 삭제 되지 않을 수 있는데, 해당 이유는 SimpleMessageListenerContainer을 destroy할때 AmazonSQSBufferedAsyncClient를 먼저 destroy하기 때문에 삭제처리가 누락될 수 있다. (메시지 유실 x)
 
-  
 
+- AmazonSQSBufferedAsyncClient를 sqs 연동 모듈을 사용한다면 정삭적으로 메시지 처리완료하고 종료되어도 sqs에서 메시지 삭제 처리가 안될 수 있다.
+
+  - AmazonSQSBufferedAsyncClient는 비동기로 sqs 연동 작업(send, delete 등)을 수행하는데 메시지를 수행하는 도중 종료 명령이 오면 해당 작업을 다 처리하기전에 바로 종료된다.
+
+  - sqs 연동 작업 처리를 다 완료하고 종료하고 싶다면 QueueBufferConfig를 추가해야한다.
+
+    - ```java
+          @Primary
+          @Bean(destroyMethod = "shutdown")
+          public AmazonSQSBufferedAsyncClient amazonSQSAws() {
+              //queue설정으로 sqs 요청 다 처리한 이후 shutdown
+              QueueBufferConfig queueBufferConfig = new QueueBufferConfig();
+              queueBufferConfig.setFlushOnShutdown(true);
+      
+              return new AmazonSQSBufferedAsyncClient(AmazonSQSAsyncClientBuilder.standard()
+                      .withCredentials(new EnvironmentVariableCredentialsProvider())
+                      .withRegion(Regions.AP_NORTHEAST_2)
+                      .build(), queueBufferConfig);
+          }
+      
+      ```
+
+  - 메시지 삭제 처리를 진행할때 QueueBuffer를 이용하는데 FlushOnShutdown을 true로 변경하면 종료 명령이 와도 버퍼에 들어있는 요청을 flush하고 종료한다.
+
+    - ```java
+      class QueueBuffer {
+          ....
+      	 QueueBufferConfig config;
+        ....
+         public void shutdown() {
+              if (config.isFlushOnShutdown()) {
+                  flush();
+              }
+              receiveBuffer.shutdown();
+          }
+      }
+      ```

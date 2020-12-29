@@ -3,3 +3,7 @@ cloud.aws:
   stack.auto: false
 #message:
 #  listener: custom
+
+logging.level:
+  com.amazonaws.services.sqs: trace
+  org.springframework.beans.factory.support: trace
