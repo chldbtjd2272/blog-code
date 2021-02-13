@@ -17,7 +17,9 @@ class PointTest {
         //given
 
         //when
-        pointRepository.save(new Point("test1", 100L));
+        pointRepository.save(new Point("test2", 100L));
+
+        pointRepository.count();
         //then
     }
 

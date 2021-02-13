@@ -7,13 +7,18 @@ import org.springframework.messaging.handler.MessagingAdviceBean;
 import org.springframework.messaging.handler.annotation.support.AnnotationExceptionHandlerMethodResolver;
 import org.springframework.web.method.ControllerAdviceBean;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SqsMessageHandler extends QueueMessageHandler {
+    private final Set<String> destinationSet;
 
-    public SqsMessageHandler(List<MessageConverter> messageConverters) {
+    public SqsMessageHandler(List<MessageConverter> messageConverters, Set<String> destinationSet) {
         super(messageConverters);
+        this.destinationSet = destinationSet;
     }
 
     @Override
@@ -37,6 +42,23 @@ public class SqsMessageHandler extends QueueMessageHandler {
                 }
             }
         }
+    }
+
+    /*
+     * 메시지 처리 listener 필터링 후 등록
+     * */
+    @Override
+    protected void registerHandlerMethod(Object handler, Method method, MappingInformation mapping) {
+        if (!getDirectLookupDestinations(mapping).isEmpty()) {
+            super.registerHandlerMethod(handler, method, mapping);
+        }
+    }
+
+    @Override
+    protected Set<String> getDirectLookupDestinations(MappingInformation mapping) {
+        return mapping.getLogicalResourceIds().stream()
+                .filter(destinationSet::contains)
+                .collect(Collectors.toSet());
     }
 
     private static class MessagingControllerAdviceBean implements MessagingAdviceBean {

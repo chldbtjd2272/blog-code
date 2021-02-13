@@ -15,9 +15,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import java.time.Duration;
 
 @Configuration
-@EnableRedisRepositories(
-        enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP,
-        shadowCopy = RedisKeyValueAdapter.ShadowCopy.ON)
+@EnableRedisRepositories()
 public class RedisConfig {
 
     @Bean
@@ -29,6 +27,14 @@ public class RedisConfig {
                 .commandTimeout(Duration.ofSeconds(5))
                 .clientOptions(clientOptions).build();
         return new LettuceConnectionFactory(serverConfig, clientConfig);
+    }
+
+
+    @Bean
+    public RedisTemplate<?, ?> redisTemplate() {
+        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
     }
 
     @Bean

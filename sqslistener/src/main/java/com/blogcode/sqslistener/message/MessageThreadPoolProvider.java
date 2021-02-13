@@ -10,10 +10,10 @@ public class MessageThreadPoolProvider implements DisposableBean {
 
     public MessageThreadPoolProvider() {
         executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(10);
+        executor.setCorePoolSize(22);
+        executor.setMaxPoolSize(22);
         executor.setThreadNamePrefix("sqs-listener-");
-        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setWaitForTasksToCompleteOnShutdown(false);
         executor.setAwaitTerminationSeconds(30000);
         executor.initialize();
     }

@@ -1,6 +1,5 @@
 package com.blogcode.sqslistener.message;
 
-import com.blogcode.sqslistener.message.MessageThreadPoolProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;

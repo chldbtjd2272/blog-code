@@ -1,9 +1,24 @@
 cloud.aws:
   region.static: ap-northeast-2
   stack.auto: false
-#message:
-#  listener: custom
+message:
+  listener:
+    kakaoGroup:
+      maxNumberOfMessages: 1
+      maxPoolSize: 3
+      corePoolSize: 3
+      threadPrefixName: "kakao-thread-"
+      destination:
+        kakao: kakao-pay-queue
+    naverGroup:
+      maxNumberOfMessages: 1
+      maxPoolSize: 3
+      corePoolSize: 3
+      threadPrefixName: "naver-thread-"
+      destination:
+        naver: naver-pay-queue
 
-logging.level:
-  com.amazonaws.services.sqs: trace
-  org.springframework.beans.factory.support: trace
+
+#logging.level:
+#  com.amazonaws.services.sqs: trace
+#  org.springframework.beans.factory.support: trace
