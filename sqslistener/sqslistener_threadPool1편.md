@@ -297,6 +297,4 @@
 
 - spring-Could-aws를 활용해 SqsListener 서버를 구축한다면 스레드 수와 동시 처리 메시지 수를 잘 지정해야한다.
 - MaxNumberOfMessages는 실제 동시에 처리될 메시지 갯수이므로 스레드 수를 잘 고려하여 설정한다.
-- MaxNumberOfMessages는 전체 Queue에 공통으로 적용되므로, 큐 별로 각각 설정하고 싶다면 코드에서 설정하지말고 aws 설정하자
-  - 적용 우선순위는 코드가 먼저 적용된다.
-  - 큐 별로 처리 스레드를 다르게 가져가고 싶으면 Queue에서 직접 MaxNumberOfMessages를 각각 수정해주면 된다.
+

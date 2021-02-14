@@ -1,6 +1,7 @@
 package com.blogcode.sqslistener.config;
 
 import com.amazonaws.services.sqs.AmazonSQSAsync;
+import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.blogcode.sqslistener.message.MessageThreadPoolProvider;
 import com.blogcode.sqslistener.message.SqsGracefulShutdownHandler;
 import com.blogcode.sqslistener.message.SqsMessageHandlerFactory;
