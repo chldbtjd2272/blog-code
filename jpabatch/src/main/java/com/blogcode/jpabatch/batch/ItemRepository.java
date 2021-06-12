@@ -1,4 +1,4 @@
-package com.blogcode.jpabatch;
+package com.blogcode.jpabatch.batch;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

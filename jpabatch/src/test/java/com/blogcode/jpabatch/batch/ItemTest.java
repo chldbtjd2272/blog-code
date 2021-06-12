@@ -1,5 +1,6 @@
-package com.blogcode.jpabatch;
+package com.blogcode.jpabatch.batch;
 
+import com.blogcode.jpabatch.JpabatchApplication;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ class ItemTest {
 
     @AfterEach
     void tearDown() {
-//        itemRepository.deleteAllInBatch();
-//        customerRepository.deleteAllInBatch();
+        itemRepository.deleteAllInBatch();
+        customerRepository.deleteAllInBatch();
     }
 
     @Test
